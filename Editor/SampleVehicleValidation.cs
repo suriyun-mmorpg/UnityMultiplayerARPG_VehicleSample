@@ -178,7 +178,12 @@ namespace MultiplayerARPG
                 go.transform.position = new Vector3(0f, 2f, 0f);
                 var controller = go.GetComponent<SampleVehiclePhysics>();
                 controller.Initialize(); controller.SetSimulation(true);
-                foreach (var effects in go.GetComponentsInChildren<UnityStandardAssets.Vehicles.Car.WheelEffects>()) Invoke(effects, "Start");
+                foreach (var effects in go.GetComponentsInChildren<UnityStandardAssets.Vehicles.Car.WheelEffects>())
+                {
+                    // Runtime skid trails use delayed Destroy, which is unavailable in EditMode.
+                    effects.SkidTrailPrefab = null;
+                    Invoke(effects, "Start");
+                }
                 var physics = scene.GetPhysicsScene();
                 Check(physics != Physics.defaultPhysicsScene, "Physics checks must not simulate the user scene.");
                 Physics.SyncTransforms();
